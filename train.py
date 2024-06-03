@@ -222,8 +222,8 @@ def train_model(config):
     for epoch in range(initial_epoch, config['num_epochs']):
         torch.cuda.empty_cache()
         model.train()
-        #batch_iterator = tqdm(train_dataloader, desc=f"Processing Epoch {epoch:02d}")
-        batch_iterator = train_dataloader
+        batch_iterator = tqdm(train_dataloader, desc=f"Processing Epoch {epoch:02d}")
+        #batch_iterator = train_dataloader
         for batch in batch_iterator:
 
             encoder_input = batch['encoder_input'].to(device) # (b, seq_len)
@@ -241,7 +241,7 @@ def train_model(config):
 
             # Compute the loss using a simple cross entropy
             loss = loss_fn(proj_output.view(-1, tokenizer_tgt.get_vocab_size()), label.view(-1))
-            #batch_iterator.set_postfix({"loss": f"{loss.item():6.3f}"})
+            batch_iterator.set_postfix({"loss": f"{loss.item():6.3f}"})
 
             # Log the loss
             writer.add_scalar('train loss', loss.item(), global_step)
